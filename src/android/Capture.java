@@ -279,7 +279,13 @@ public class Capture extends CordovaPlugin {
             ContentResolver contentResolver = this.cordova.getActivity().getContentResolver();
             ContentValues cv = new ContentValues();
             cv.put(MediaStore.Images.Media.MIME_TYPE, IMAGE_JPEG);
-            imageUri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, cv);
+            
+            if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+                   imageUri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, cv);                   
+            } else {
+                   imageUri = contentResolver.insert(MediaStore.Images.Media.INTERNAL_CONTENT_URI, cv);                   
+            }
+            
             LOG.d(LOG_TAG, "Taking a picture and saving to: " + imageUri.toString());
 
             intent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, imageUri);
